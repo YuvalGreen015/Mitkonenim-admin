@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Sign in</title>
+<style>
+:root{--ink:#1b1f3b;--mute:#6b7399;--card:rgba(255,255,255,.9);--line:rgba(80,90,160,.2)}
+@media(prefers-color-scheme:dark){:root{--ink:#f1f3ff;--mute:#9aa3cf;--card:rgba(24,28,52,.85);--line:rgba(160,170,255,.2)}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+ background:radial-gradient(700px 500px at 10% 0%,rgba(99,102,241,.55),transparent 60%),radial-gradient(700px 500px at 100% 100%,rgba(236,72,153,.5),transparent 60%),linear-gradient(160deg,#1e1b4b,#312e81 50%,#701a75)}
+.card{width:100%;max-width:380px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:30px 26px;backdrop-filter:blur(14px);box-shadow:0 30px 60px -20px rgba(0,0,0,.6);text-align:center}
+.logo{width:56px;height:56px;margin:0 auto 14px;border-radius:18px;display:grid;place-items:center;font-size:28px;color:#fff;background:linear-gradient(135deg,#6366f1,#ec4899)}
+h1{margin:0 0 4px;font-size:22px}
+p{margin:0 0 20px;color:var(--mute);font-size:14px}
+input{width:100%;padding:13px 14px;font:inherit;border:2px solid var(--line);border-radius:14px;background:transparent;color:var(--ink);margin-bottom:12px}
+input:focus{outline:none;border-color:#6366f1}
+button{width:100%;padding:13px;font:inherit;font-weight:700;border:0;border-radius:14px;color:#fff;cursor:pointer;background:linear-gradient(135deg,#4f46e5,#db2777)}
+button:disabled{opacity:.6}
+button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+#err{min-height:22px;margin-top:12px;font-size:14px;font-weight:600;color:#dc2626}
+</style>
+</head>
+<body>
+<form class="card" id="f">
+  <div class="logo" aria-hidden="true">&#128274;</div>
+  <h1>Install analytics</h1>
+  <p>Private dashboard. Open your private link to get in without typing.</p>
+  <input id="pw" type="password" autocomplete="current-password" placeholder="Password" aria-label="Password" autofocus required>
+  <button id="go">Sign in</button>
+  <div id="err" role="alert"></div>
+</form>
+<script>
+document.getElementById('f').onsubmit=async e=>{e.preventDefault();const b=document.getElementById('go'),m=document.getElementById('err');b.disabled=true;m.textContent='';
+  try{const r=await fetch('/api/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({password:document.getElementById('pw').value})});
+    if(r.ok){location.reload();return}
+    m.textContent=r.status==429?'Too many attempts. Try again in 15 minutes.':'Wrong password.';
+  }catch(x){m.textContent='Cannot reach the server.'}
+  b.disabled=false};
+</script>
+</body>
+</html>
